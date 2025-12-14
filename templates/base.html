@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}🐾 PetFinder{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        /* Animated gradient */
+        .bg-animated {
+            background: linear-gradient(-45deg, #0ea5e9, #06b6d4, #0891b2, #0e7490, #22d3ee);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Floating shapes */
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: floatShape 20s ease-in-out infinite;
+        }
+        @keyframes floatShape {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -30px); }
+            66% { transform: translate(-20px, 20px); }
+        }
+        @keyframes floatPaw {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.4);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(14, 165, 233, 0.6);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #0ea5e9;
+            color: #0ea5e9;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: #0ea5e9;
+            color: white;
+            transform: translateY(-2px);
+        }
+        /* Cards */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        /* Slide in animation */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans bg-animated">
+    
+    <!-- Background decorations -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="floating-shape w-[500px] h-[500px] bg-cyan-300" style="top: -15%; left: -10%;"></div>
+        <div class="floating-shape w-[400px] h-[400px] bg-sky-400" style="top: 40%; right: -15%; animation-delay: -7s;"></div>
+        <div class="floating-shape w-[350px] h-[350px] bg-teal-300" style="bottom: -10%; left: 20%; animation-delay: -14s;"></div>
+        
+        <!-- Floating paws -->
+        <div class="absolute text-white/20 text-6xl" style="top: 12%; left: 8%; animation: floatPaw 6s ease-in-out infinite;">🐾</div>
+        <div class="absolute text-white/15 text-5xl" style="top: 35%; right: 10%; animation: floatPaw 8s ease-in-out infinite; animation-delay: -2s;">🐾</div>
+        <div class="absolute text-white/20 text-4xl" style="bottom: 25%; left: 12%; animation: floatPaw 7s ease-in-out infinite; animation-delay: -4s;">🐾</div>
+        <div class="absolute text-white/10 text-7xl" style="bottom: 15%; right: 20%; animation: floatPaw 9s ease-in-out infinite; animation-delay: -1s;">🐾</div>
+    </div>
+
+    <!-- Header -->
+    <header class="relative z-10 py-4">
+        <nav class="container mx-auto px-4">
+            <div class="glass rounded-2xl px-6 py-3 flex items-center justify-between shadow-lg">
+                <a href="{{ url_for('index') }}" class="flex items-center gap-3 group">
+                    <span class="text-4xl group-hover:scale-110 transition-transform duration-300">🐾</span>
+                    <div>
+                        <span class="text-2xl font-bold text-white drop-shadow-lg">PetFinder</span>
+                        <p class="text-white/60 text-xs">Encuentra a tu mascota</p>
+                    </div>
+                </a>
+                <div class="flex items-center gap-2 md:gap-4">
+                    <a href="{{ url_for('reportes') }}" class="hidden md:flex items-center gap-2 text-white/80 hover:text-white transition px-3 py-2 rounded-lg hover:bg-white/10">
+                        📋 <span>Reportes</span>
+                    </a>
+                    <a href="{{ url_for('mapa') }}" class="hidden md:flex items-center gap-2 text-white/80 hover:text-white transition px-3 py-2 rounded-lg hover:bg-white/10">
+                        🗺️ <span>Mapa</span>
+                    </a>
+                    <a href="{{ url_for('reportar') }}" class="btn-primary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2">
+                        <span class="text-lg">➕</span>
+                        <span class="hidden sm:inline">Reportar</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="fixed top-24 right-4 z-50 space-y-3">
+                {% for category, message in messages %}
+                    <div class="glass-card px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-slide-in
+                        {% if category == 'success' %}border-l-4 border-emerald-500{% elif category == 'warning' %}border-l-4 border-amber-500{% else %}border-l-4 border-red-500{% endif %}">
+                        <span class="text-xl">
+                            {% if category == 'success' %}✅{% elif category == 'warning' %}⚠️{% else %}❌{% endif %}
+                        </span>
+                        <span class="text-slate-700 font-medium">{{ message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 pb-12 relative z-10">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 py-6">
+        <div class="container mx-auto px-4">
+            <div class="glass rounded-2xl px-6 py-4 text-center">
+                <p class="text-white/90 font-medium">🐾 <span class="font-bold">PetFinder</span> — Reuniendo familias con sus mascotas</p>
+                <p class="text-white/50 text-sm mt-1">Hecho con ❤️ en Bolivia</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}🐾 PetFinder - Encuentra a tu Mascota{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto py-8">
+    
+    <!-- Hero Section -->
+    <div class="glass-card rounded-3xl p-8 md:p-12 text-center mb-8 card-hover">
+        
+        <!-- Animated paw -->
+        <div class="mb-8 relative inline-block">
+            <div class="absolute -top-16 left-1/2 -translate-x-1/2 bg-white/90 px-4 py-2 rounded-full shadow-lg text-sm font-medium text-cyan-700 whitespace-nowrap">
+                ¡Ayúdame a encontrar mi hogar! 🏠
+            </div>
+            <span class="text-8xl inline-block cursor-pointer hover:scale-110 transition-transform duration-300" style="animation: floatPaw 3s ease-in-out infinite;">🐾</span>
+        </div>
+        
+        <!-- Title -->
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 bg-gradient-to-r from-cyan-600 via-sky-500 to-teal-500 bg-clip-text text-transparent">
+            Encuentra a tu Mascota
+        </h1>
+        
+        <p class="text-slate-600 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
+            Ayudamos a reunir mascotas perdidas con sus familias. 
+            Reporta, busca y comparte para traerlos a casa.
+        </p>
+
+        <!-- Stats -->
+        <div class="flex justify-center gap-4 md:gap-8 mb-10 flex-wrap">
+            <div class="bg-gradient-to-br from-sky-500 to-cyan-600 px-6 py-5 rounded-2xl min-w-[120px] shadow-lg card-hover">
+                <div class="text-4xl md:text-5xl font-bold text-white" id="counter1">{{ total }}</div>
+                <div class="text-white/90 text-sm font-medium mt-1">📋 Reportados</div>
+            </div>
+            <div class="bg-gradient-to-br from-emerald-400 to-green-500 px-6 py-5 rounded-2xl min-w-[120px] shadow-lg card-hover">
+                <div class="text-4xl md:text-5xl font-bold text-white" id="counter2">{{ encontrados }}</div>
+                <div class="text-white/90 text-sm font-medium mt-1">🎉 Encontrados</div>
+            </div>
+            <div class="bg-gradient-to-br from-rose-400 to-red-500 px-6 py-5 rounded-2xl min-w-[120px] shadow-lg card-hover">
+                <div class="text-4xl md:text-5xl font-bold text-white" id="counter3">{{ perdidos }}</div>
+                <div class="text-white/90 text-sm font-medium mt-1">🔍 Buscando</div>
+            </div>
+        </div>
+        
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('reportar') }}" class="btn-primary text-white px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3">
+                <span class="text-2xl">🐾</span>
+                Reportar Animal Perdido
+            </a>
+            <a href="{{ url_for('reportes') }}" class="btn-secondary px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3">
+                <span class="text-2xl">🔍</span>
+                Ver Animales Reportados
+            </a>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="glass-card rounded-2xl p-6 text-center card-hover">
+            <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-sky-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span class="text-3xl">📋</span>
+            </div>
+            <h3 class="font-bold text-slate-800 text-lg mb-2">Reporta</h3>
+            <p class="text-slate-500">Completa el formulario con los datos de tu mascota perdida</p>
+        </div>
+        <div class="glass-card rounded-2xl p-6 text-center card-hover">
+            <div class="w-16 h-16 bg-gradient-to-br from-violet-400 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span class="text-3xl">📢</span>
+            </div>
+            <h3 class="font-bold text-slate-800 text-lg mb-2">Comparte</h3>
+            <p class="text-slate-500">Tu reporte será visible para toda la comunidad</p>
+        </div>
+        <div class="glass-card rounded-2xl p-6 text-center card-hover">
+            <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span class="text-3xl">🐕</span>
+            </div>
+            <h3 class="font-bold text-slate-800 text-lg mb-2">Encuentra</h3>
+            <p class="text-slate-500">Reúnete con tu mascota y celebra el reencuentro</p>
+        </div>
+    </div>
+    
+</div>
+
+<style>
+@keyframes floatPaw {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}🐾 Animales Reportados{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-4">
+    <div class="glass-card rounded-3xl shadow-2xl overflow-hidden">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-cyan-500 to-sky-500 px-6 py-5 flex flex-wrap justify-between items-center gap-3">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <span class="text-2xl">📋</span> Animales Reportados
+            </h2>
+            <div class="flex gap-2">
+                <a href="{{ url_for('mapa') }}" class="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition text-sm flex items-center gap-1">
+                    🗺️ Ver Mapa
+                </a>
+                <a href="{{ url_for('reportar') }}" class="px-4 py-2 bg-white text-cyan-600 rounded-xl hover:bg-white/90 transition text-sm font-semibold">
+                    ➕ Nuevo Reporte
+                </a>
+            </div>
+        </div>
+        
+        <!-- Filtros -->
+        <div class="p-6 bg-slate-50/50 border-b border-slate-100">
+            <form method="GET" class="flex flex-wrap gap-3">
+                <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="🔍 Buscar por nombre..."
+                       class="flex-1 min-w-48 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition bg-white">
+                
+                <select name="categoria" class="px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-cyan-500 bg-white">
+                    <option value="">Todos los animales</option>
+                    <option value="perro" {% if categoria_filtro == 'perro' %}selected{% endif %}>🐕 Perros</option>
+                    <option value="gato" {% if categoria_filtro == 'gato' %}selected{% endif %}>🐈 Gatos</option>
+                    <option value="ave" {% if categoria_filtro == 'ave' %}selected{% endif %}>🐦 Aves</option>
+                    <option value="conejo" {% if categoria_filtro == 'conejo' %}selected{% endif %}>🐰 Conejos</option>
+                    <option value="hamster" {% if categoria_filtro == 'hamster' %}selected{% endif %}>🐹 Hámsters</option>
+                    <option value="otro" {% if categoria_filtro == 'otro' %}selected{% endif %}>🐾 Otros</option>
+                </select>
+                
+                <select name="estado" class="px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-cyan-500 bg-white">
+                    <option value="">Todos los estados</option>
+                    <option value="Perdido" {% if estado_filtro == 'Perdido' %}selected{% endif %}>😿 Perdidos</option>
+                    <option value="Visto" {% if estado_filtro == 'Visto' %}selected{% endif %}>👀 Vistos</option>
+                    <option value="Encontrado" {% if estado_filtro == 'Encontrado' %}selected{% endif %}>🎉 Encontrados</option>
+                </select>
+                
+                <button type="submit" class="btn-primary text-white px-6 py-3 rounded-xl font-semibold">
+                    Filtrar
+                </button>
+                
+                {% if busqueda or categoria_filtro or estado_filtro %}
+                <a href="{{ url_for('reportes') }}" class="px-4 py-3 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition flex items-center gap-1">
+                    ✕ Limpiar
+                </a>
+                {% endif %}
+            </form>
+        </div>
+        
+        <!-- Lista de reportes -->
+        <div class="p-6">
+            {% if reportes %}
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for reporte in reportes %}
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-100 card-hover">
+                        
+                        <!-- Imagen -->
+                        {% if reporte.foto %}
+                            <div class="relative">
+                                <img src="{{ reporte.foto }}" alt="{{ reporte.nombre }}" class="w-full h-48 object-cover">
+                                <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold shadow-lg
+                                    {% if reporte.estado == 'Perdido' %}bg-red-500 text-white{% elif reporte.estado == 'Visto' %}bg-amber-400 text-white{% else %}bg-emerald-500 text-white{% endif %}">
+                                    {% if reporte.estado == 'Perdido' %}😿{% elif reporte.estado == 'Visto' %}👀{% else %}🎉{% endif %} {{ reporte.estado }}
+                                </span>
+                            </div>
+                        {% else %}
+                            <div class="relative w-full h-48 bg-gradient-to-br from-cyan-100 to-sky-200 flex items-center justify-center text-6xl">
+                                {% if reporte.categoria == 'perro' %}🐕{% elif reporte.categoria == 'gato' %}🐈{% elif reporte.categoria == 'ave' %}🐦{% elif reporte.categoria == 'conejo' %}🐰{% elif reporte.categoria == 'hamster' %}🐹{% else %}🐾{% endif %}
+                                <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold shadow-lg
+                                    {% if reporte.estado == 'Perdido' %}bg-red-500 text-white{% elif reporte.estado == 'Visto' %}bg-amber-400 text-white{% else %}bg-emerald-500 text-white{% endif %}">
+                                    {{ reporte.estado }}
+                                </span>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Contenido -->
+                        <div class="p-5">
+                            <h3 class="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
+                                <span class="text-xl">
+                                    {% if reporte.categoria == 'perro' %}🐕{% elif reporte.categoria == 'gato' %}🐈{% elif reporte.categoria == 'ave' %}🐦{% elif reporte.categoria == 'conejo' %}🐰{% elif reporte.categoria == 'hamster' %}🐹{% else %}🐾{% endif %}
+                                </span>
+                                {{ reporte.nombre }}
+                            </h3>
+                            
+                            <p class="text-slate-500 text-sm mb-4 line-clamp-2">{{ reporte.descripcion }}</p>
+                            
+                            <div class="flex justify-between items-center pt-3 border-t border-slate-100">
+                                <span class="text-xs text-slate-400 flex items-center gap-1">
+                                    📍 {{ reporte.ubicacion[:20] }}{% if reporte.ubicacion|length > 20 %}...{% endif %}
+                                </span>
+                                <a href="{{ url_for('detalle', id=reporte.id) }}" class="text-cyan-600 hover:text-cyan-700 font-semibold text-sm flex items-center gap-1 transition">
+                                    Ver más →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-16">
+                    <div class="w-24 h-24 bg-gradient-to-br from-cyan-400 to-sky-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <span class="text-5xl">📭</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-700 mb-2">No hay reportes aún</h3>
+                    <p class="text-slate-400 mb-6">Sé el primero en reportar un animal perdido</p>
+                    <a href="{{ url_for('reportar') }}" class="btn-primary text-white px-8 py-4 rounded-xl font-bold inline-flex items-center gap-2">
+                        🐾 Crear Reporte
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

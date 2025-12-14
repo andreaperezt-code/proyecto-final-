@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block title %}🐾 {{ reporte.nombre }} - Detalle{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-4">
+    <div class="glass-card rounded-3xl shadow-2xl overflow-hidden">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-cyan-500 to-sky-500 px-6 py-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <span class="text-2xl">🐾</span> Detalle del Animal
+            </h2>
+            <a href="{{ url_for('reportes') }}" class="text-white/80 hover:text-white text-sm transition">
+                ← Volver
+            </a>
+        </div>
+        
+        <!-- Foto y nombre -->
+        <div class="text-center py-10 bg-gradient-to-b from-slate-50 to-white">
+            {% if reporte.foto %}
+                <img src="{{ reporte.foto }}" alt="{{ reporte.nombre }}" 
+                     class="w-56 h-56 object-cover rounded-3xl mx-auto shadow-2xl mb-6 ring-4 ring-white cursor-pointer hover:scale-105 transition duration-300">
+            {% else %}
+                <div class="w-32 h-32 bg-gradient-to-br from-cyan-400 to-sky-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
+                    <span class="text-6xl">
+                        {% if reporte.categoria == 'perro' %}🐕{% elif reporte.categoria == 'gato' %}🐈{% elif reporte.categoria == 'ave' %}🐦{% elif reporte.categoria == 'conejo' %}🐰{% elif reporte.categoria == 'hamster' %}🐹{% else %}🐾{% endif %}
+                    </span>
+                </div>
+            {% endif %}
+            
+            <h1 class="text-3xl font-extrabold text-slate-800 mb-3">{{ reporte.nombre }}</h1>
+            
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <span class="text-2xl">
+                    {% if reporte.categoria == 'perro' %}🐕{% elif reporte.categoria == 'gato' %}🐈{% elif reporte.categoria == 'ave' %}🐦{% elif reporte.categoria == 'conejo' %}🐰{% elif reporte.categoria == 'hamster' %}🐹{% else %}🐾{% endif %}
+                </span>
+                <span class="text-slate-500 capitalize font-medium">{{ reporte.categoria or 'Sin categoría' }}</span>
+            </div>
+            
+            <span class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-lg font-bold shadow-lg
+                {% if reporte.estado == 'Perdido' %}bg-gradient-to-r from-red-500 to-rose-500 text-white{% elif reporte.estado == 'Visto' %}bg-gradient-to-r from-amber-400 to-yellow-500 text-white{% else %}bg-gradient-to-r from-emerald-500 to-green-500 text-white{% endif %}">
+                {% if reporte.estado == 'Perdido' %}😿{% elif reporte.estado == 'Visto' %}👀{% else %}🎉{% endif %}
+                {{ reporte.estado }}
+            </span>
+        </div>
+        
+        <!-- Detalles -->
+        <div class="p-6 md:p-8 space-y-4">
+            <div class="flex gap-4 p-4 bg-slate-50 rounded-2xl">
+                <div class="w-12 h-12 bg-gradient-to-br from-cyan-400 to-sky-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                    <span class="text-xl">📄</span>
+                </div>
+                <div class="flex-1">
+                    <div class="text-sm text-cyan-600 font-semibold mb-1">Descripción</div>
+                    <div class="text-slate-700">{{ reporte.descripcion }}</div>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="flex gap-4 p-4 bg-slate-50 rounded-2xl">
+                    <div class="w-12 h-12 bg-gradient-to-br from-violet-400 to-purple-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                        <span class="text-xl">📅</span>
+                    </div>
+                    <div>
+                        <div class="text-sm text-violet-600 font-semibold mb-1">Fecha perdido</div>
+                        <div class="text-slate-700">{{ reporte.fecha_perdido.strftime('%d/%m/%Y') if reporte.fecha_perdido else 'No especificada' }}</div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4 p-4 bg-slate-50 rounded-2xl">
+                    <div class="w-12 h-12 bg-gradient-to-br from-rose-400 to-pink-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                        <span class="text-xl">📍</span>
+                    </div>
+                    <div>
+                        <div class="text-sm text-rose-600 font-semibold mb-1">Ubicación</div>
+                        <div class="text-slate-700">{{ reporte.ubicacion }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 p-4 bg-slate-50 rounded-2xl">
+                <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-green-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                    <span class="text-xl">📞</span>
+                </div>
+                <div>
+                    <div class="text-sm text-emerald-600 font-semibold mb-1">Contacto</div>
+                    <div class="text-slate-700 font-medium">{{ reporte.contacto }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actualizar estado -->
+        <div class="p-6 md:p-8 bg-slate-50 border-t border-slate-100">
+            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span class="text-xl">🔄</span> Actualizar Estado
+            </h3>
+            <form action="{{ url_for('actualizar_estado', id=reporte.id) }}" method="POST" class="space-y-4">
+                <div class="grid grid-cols-3 gap-3">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="estado" value="Perdido" {% if reporte.estado == 'Perdido' %}checked{% endif %} class="hidden peer">
+                        <div class="peer-checked:ring-4 peer-checked:ring-red-400 peer-checked:bg-red-50 bg-white border-2 border-slate-200 rounded-2xl p-4 text-center transition-all hover:shadow-lg">
+                            <span class="text-4xl">😿</span>
+                            <div class="text-sm font-bold text-slate-700 mt-2">Perdido</div>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="estado" value="Visto" {% if reporte.estado == 'Visto' %}checked{% endif %} class="hidden peer">
+                        <div class="peer-checked:ring-4 peer-checked:ring-amber-400 peer-checked:bg-amber-50 bg-white border-2 border-slate-200 rounded-2xl p-4 text-center transition-all hover:shadow-lg">
+                            <span class="text-4xl">👀</span>
+                            <div class="text-sm font-bold text-slate-700 mt-2">Visto</div>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="estado" value="Encontrado" {% if reporte.estado == 'Encontrado' %}checked{% endif %} class="hidden peer">
+                        <div class="peer-checked:ring-4 peer-checked:ring-emerald-400 peer-checked:bg-emerald-50 bg-white border-2 border-slate-200 rounded-2xl p-4 text-center transition-all hover:shadow-lg">
+                            <span class="text-4xl">🎉</span>
+                            <div class="text-sm font-bold text-slate-700 mt-2">Encontrado</div>
+                        </div>
+                    </label>
+                </div>
+                
+                <textarea name="comentario" rows="2" placeholder="Añade un comentario (opcional)..."
+                          class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition resize-none bg-white"></textarea>
+                
+                <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2">
+                    <span class="text-xl">✅</span> Guardar Cambios
+                </button>
+            </form>
+        </div>
+        
+        <!-- Comentarios -->
+        <div class="p-6 md:p-8 border-t border-slate-100">
+            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span class="text-xl">💬</span> Comentarios
+            </h3>
+            
+            <form action="{{ url_for('agregar_comentario', id=reporte.id) }}" method="POST" class="flex gap-3 mb-6">
+                <input type="text" name="comentario" required placeholder="Escribe un comentario..."
+                       class="flex-1 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition bg-white">
+                <button type="submit" class="btn-primary text-white px-6 py-3 rounded-xl font-semibold">
+                    📤
+                </button>
+            </form>
+            
+            {% if reporte.comentarios %}
+                <div class="space-y-3">
+                    {% for comentario in reporte.comentarios %}
+                    <div class="bg-gradient-to-r from-slate-50 to-cyan-50 p-4 rounded-xl border border-slate-100">
+                        <div class="text-xs text-slate-400 mb-1">{{ comentario.fecha.strftime('%d/%m/%Y %H:%M') if comentario.fecha else '' }}</div>
+                        <div class="text-slate-700">{{ comentario.texto }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center text-slate-400 py-4">No hay comentarios aún</p>
+            {% endif %}
+        </div>
+        
+        <!-- Acciones -->
+        <div class="p-6 bg-slate-50 border-t border-slate-100 flex flex-wrap gap-3 justify-center">
+            <button onclick="compartir()" class="btn-secondary px-6 py-3 rounded-xl font-semibold flex items-center gap-2">
+                📤 Compartir
+            </button>
+            <form action="{{ url_for('eliminar', id=reporte.id) }}" method="POST" class="inline" 
+                  onsubmit="return confirm('¿Estás seguro de eliminar este reporte?')">
+                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-xl font-semibold hover:shadow-lg transition flex items-center gap-2">
+                    🗑️ Eliminar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+function compartir() {
+    const texto = `🐾 {{ reporte.nombre }} - Estado: {{ reporte.estado }}\n📍 Ubicación: {{ reporte.ubicacion }}\n📞 Contacto: {{ reporte.contacto }}`;
+    if (navigator.share) {
+        navigator.share({ title: 'Reporte de Animal Perdido', text: texto });
+    } else {
+        navigator.clipboard.writeText(texto).then(() => {
+            alert('Información copiada al portapapeles 📋');
+        });
+    }
+}
+</script>
+{% endblock %}
+{% endblock %}

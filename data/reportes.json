@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1,
+    "nombre": "kori",
+    "descripcion": "perro salchicha color cafe",
+    "categoria": "perro",
+    "fecha_perdido": "2025-09-17",
+    "ubicacion": "parque cotel",
+    "contacto": "60605120",
+    "estado": "Visto",
+    "foto": null,
+    "fecha_reporte": "2025-12-14 20:22",
+    "comentario_estado": null
+  },
+  {
+    "id": 2,
+    "nombre": "luna",
+    "descripcion": "gato color blanco",
+    "categoria": "gato",
+    "fecha_perdido": "2025-09-23",
+    "ubicacion": "parque cotel",
+    "contacto": "60605120",
+    "estado": "Perdido",
+    "foto": null,
+    "fecha_reporte": "2025-12-14 20:42",
+    "comentario_estado": null
+  }
+]

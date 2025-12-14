@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}🗺️ Mapa de Animales{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-4">
+    <div class="glass-card rounded-3xl shadow-2xl overflow-hidden">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-cyan-500 to-sky-500 px-6 py-5">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <span class="text-2xl">🗺️</span> Mapa de Animales Reportados
+            </h2>
+            <p class="text-white/70 text-sm mt-1">Visualiza la ubicación de todos los animales en el mapa</p>
+        </div>
+        
+        <!-- Filtros del mapa -->
+        <div class="p-4 bg-slate-50 flex flex-wrap gap-3 items-center border-b border-slate-100">
+            <span class="text-slate-600 font-semibold">Filtrar:</span>
+            <button onclick="filtrarMapa('todos')" class="px-4 py-2 bg-white rounded-full border-2 border-cyan-500 text-cyan-600 hover:bg-cyan-50 transition text-sm font-medium shadow-sm">
+                🗺️ Todos
+            </button>
+            <button onclick="filtrarMapa('Perdido')" class="px-4 py-2 bg-red-50 rounded-full border-2 border-red-400 text-red-600 hover:bg-red-100 transition text-sm font-medium">
+                😿 Perdidos
+            </button>
+            <button onclick="filtrarMapa('Visto')" class="px-4 py-2 bg-amber-50 rounded-full border-2 border-amber-400 text-amber-600 hover:bg-amber-100 transition text-sm font-medium">
+                👀 Vistos
+            </button>
+            <button onclick="filtrarMapa('Encontrado')" class="px-4 py-2 bg-emerald-50 rounded-full border-2 border-emerald-400 text-emerald-600 hover:bg-emerald-100 transition text-sm font-medium">
+                🎉 Encontrados
+            </button>
+        </div>
+        
+        <!-- Mapa -->
+        <div id="mapa" class="w-full h-96 md:h-[500px]"></div>
+        
+        <!-- Leyenda -->
+        <div class="p-4 bg-white border-t border-slate-100">
+            <div class="flex flex-wrap gap-6 justify-center text-sm font-medium">
+                <span class="flex items-center gap-2"><span class="w-4 h-4 bg-gradient-to-r from-red-500 to-rose-500 rounded-full shadow"></span> Perdido</span>
+                <span class="flex items-center gap-2"><span class="w-4 h-4 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full shadow"></span> Visto</span>
+                <span class="flex items-center gap-2"><span class="w-4 h-4 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full shadow"></span> Encontrado</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lista de ubicaciones -->
+    <div class="mt-8 glass-card rounded-3xl shadow-2xl p-6">
+        <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <span class="text-xl">📍</span> Ubicaciones Reportadas
+        </h3>
+        
+        {% if reportes %}
+        <div class="grid gap-3 md:grid-cols-2">
+            {% for r in reportes %}
+            <a href="{{ url_for('detalle', id=r.id) }}" class="block p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-xl hover:from-cyan-50 hover:to-sky-100 transition group border border-slate-100 card-hover">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-cyan-400 to-sky-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                        <span class="text-xl">
+                            {% if r.categoria == 'perro' %}🐕{% elif r.categoria == 'gato' %}🐈{% elif r.categoria == 'ave' %}🐦{% elif r.categoria == 'conejo' %}🐰{% elif r.categoria == 'hamster' %}🐹{% else %}🐾{% endif %}
+                        </span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-semibold text-slate-800 group-hover:text-cyan-600 transition truncate">{{ r.nombre }}</div>
+                        <div class="text-sm text-slate-500 truncate">📍 {{ r.ubicacion }}</div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-xs font-bold flex-shrink-0
+                        {% if r.estado == 'Perdido' %}bg-red-100 text-red-600{% elif r.estado == 'Visto' %}bg-amber-100 text-amber-600{% else %}bg-emerald-100 text-emerald-600{% endif %}">
+                        {{ r.estado }}
+                    </span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-12">
+            <div class="w-20 h-20 bg-gradient-to-br from-cyan-400 to-sky-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span class="text-4xl">🗺️</span>
+            </div>
+            <p class="text-slate-400 font-medium">No hay animales reportados aún</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Datos JSON para el mapa -->
+<script id="reportes-data" type="application/json">
+{{ reportes_json | safe }}
+</script>
+
+{% block scripts %}
+<script>
+    // Inicializar mapa centrado en Bolivia (La Paz)
+    const mapa = L.map('mapa').setView([-16.5, -68.15], 12);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mapa);
+    
+    // Cargar datos desde JSON embebido
+    const reportesData = document.getElementById('reportes-data');
+    const reportes = reportesData ? JSON.parse(reportesData.textContent) : [];
+    
+    let marcadores = [];
+    
+    function getColorEstado(estado) {
+        if (estado === 'Perdido') return '#ef4444';
+        if (estado === 'Visto') return '#f59e0b';
+        return '#10b981';
+    }
+    
+    function getEmoji(categoria) {
+        const emojis = { perro: '🐕', gato: '🐈', ave: '🐦', conejo: '🐰', hamster: '🐹' };
+        return emojis[categoria] || '🐾';
+    }
+    
+    function crearMarcadores(filtro = 'todos') {
+        // Limpiar marcadores
+        marcadores.forEach(m => mapa.removeLayer(m));
+        marcadores = [];
+        
+        const reportesFiltrados = filtro === 'todos' ? reportes : reportes.filter(r => r.estado === filtro);
+        
+        reportesFiltrados.forEach(r => {
+            const color = getColorEstado(r.estado);
+            const icono = L.divIcon({
+                html: `<div style="background:${color};width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid white;box-shadow:0 4px 15px rgba(0,0,0,0.3);font-size:16px;">${getEmoji(r.categoria)}</div>`,
+                className: '',
+                iconSize: [36, 36],
+                iconAnchor: [18, 18]
+            });
+            
+            const marcador = L.marker([r.lat, r.lng], { icon: icono })
+                .addTo(mapa)
+                .bindPopup(`
+                    <div style="text-align:center;min-width:160px;padding:8px;">
+                        <h4 style="margin:0 0 8px;font-weight:700;font-size:16px;">${getEmoji(r.categoria)} ${r.nombre}</h4>
+                        <p style="margin:0 0 8px;color:#64748b;font-size:13px;">📍 ${r.ubicacion}</p>
+                        <span style="background:${color};color:white;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;">${r.estado}</span>
+                        <br><br>
+                        <a href="/detalle/${r.id}" style="color:#0ea5e9;font-size:13px;font-weight:600;text-decoration:none;">Ver detalle →</a>
+                    </div>
+                `);
+            
+            marcadores.push(marcador);
+        });
+        
+        // Ajustar vista si hay marcadores
+        if (marcadores.length > 0) {
+            const grupo = L.featureGroup(marcadores);
+            mapa.fitBounds(grupo.getBounds().pad(0.1));
+        }
+    }
+    
+    function filtrarMapa(estado) {
+        crearMarcadores(estado);
+    }
+    
+    // Inicializar marcadores
+    crearMarcadores();
+</script>
+{% endblock %}
+{% endblock %}
