@@ -32,8 +32,7 @@
                     <option value="perro" {% if categoria_filtro == 'perro' %}selected{% endif %}>🐕 Perros</option>
                     <option value="gato" {% if categoria_filtro == 'gato' %}selected{% endif %}>🐈 Gatos</option>
                     <option value="ave" {% if categoria_filtro == 'ave' %}selected{% endif %}>🐦 Aves</option>
-                    <option value="conejo" {% if categoria_filtro == 'conejo' %}selected{% endif %}>🐰 Conejos</option>
-                    <option value="hamster" {% if categoria_filtro == 'hamster' %}selected{% endif %}>🐹 Hámsters</option>
+                    
                     <option value="otro" {% if categoria_filtro == 'otro' %}selected{% endif %}>🐾 Otros</option>
                 </select>
                 
@@ -86,7 +85,7 @@
                         <div class="p-5">
                             <h3 class="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
                                 <span class="text-xl">
-                                    {% if reporte.categoria == 'perro' %}🐕{% elif reporte.categoria == 'gato' %}🐈{% elif reporte.categoria == 'ave' %}🐦{% elif reporte.categoria == 'conejo' %}🐰{% elif reporte.categoria == 'hamster' %}🐹{% else %}🐾{% endif %}
+                                    {% if reporte.categoria == 'perro' %}🐕{% elif reporte.categoria == 'gato' %}🐈{% elif reporte.categoria == 'ave' %}🐦{% else %}🐾{% endif %}
                                 </span>
                                 {{ reporte.nombre }}
                             </h3>

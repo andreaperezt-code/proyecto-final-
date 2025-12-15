@@ -110,11 +110,23 @@ def reportar():
     """Crear nuevo reporte"""
     if request.method == 'POST':
         foto_base64 = None
+        
+        # Procesar foto
         if 'foto' in request.files:
             foto = request.files['foto']
-            if foto and foto.filename:
-                foto_data = foto.read()
-                foto_base64 = f"data:{foto.content_type};base64,{base64.b64encode(foto_data).decode('utf-8')}"
+            print(f"📷 Archivo recibido: {foto.filename}, tamaño: {foto.content_length}")
+            if foto and foto.filename and foto.filename != '':
+                try:
+                    foto_data = foto.read()
+                    if len(foto_data) > 0:
+                        foto_base64 = f"data:{foto.content_type};base64,{base64.b64encode(foto_data).decode('utf-8')}"
+                        print(f"✅ Foto procesada: {len(foto_base64)} caracteres")
+                    else:
+                        print("⚠️ Archivo vacío")
+                except Exception as e:
+                    print(f"❌ Error procesando foto: {e}")
+        else:
+            print("⚠️ No se recibió archivo de foto")
         
         nuevo = Reporte(
             nombre=request.form['nombre'],

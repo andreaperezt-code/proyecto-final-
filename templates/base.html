@@ -21,36 +21,35 @@
         }
     </script>
     <style>
-        /* Glassmorphism */
+        /* Glassmorphism - Demo style */
         .glass {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        /* Animated gradient */
+        /* Animated gradient - Demo colors */
         .bg-animated {
-            background: linear-gradient(-45deg, #0ea5e9, #06b6d4, #0891b2, #0e7490, #22d3ee);
+            background: linear-gradient(135deg, #0c1929 0%, #1a365d 25%, #0d4f6e 50%, #0891b2 75%, #22d3ee 100%);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
         }
         @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
+            0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
         /* Floating shapes */
         .floating-shape {
             position: absolute;
             border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.5;
+            filter: blur(60px);
+            opacity: 0.3;
             animation: floatShape 20s ease-in-out infinite;
         }
         @keyframes floatShape {
@@ -62,34 +61,43 @@
             0%, 100% { transform: translateY(0) rotate(-5deg); }
             50% { transform: translateY(-20px) rotate(5deg); }
         }
-        /* Buttons */
+        /* Buttons - Demo style */
         .btn-primary {
-            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.4);
+            background: linear-gradient(135deg, #0891b2 0%, #22d3ee 100%);
+            box-shadow: 0 4px 20px rgba(34, 211, 238, 0.4);
             transition: all 0.3s ease;
         }
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(14, 165, 233, 0.6);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(34, 211, 238, 0.6);
         }
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid #0ea5e9;
-            color: #0ea5e9;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #22d3ee;
+            color: #0891b2;
             transition: all 0.3s ease;
         }
         .btn-secondary:hover {
-            background: #0ea5e9;
+            background: linear-gradient(135deg, #0891b2, #22d3ee);
             color: white;
+            border-color: transparent;
             transform: translateY(-2px);
         }
-        /* Cards */
+        /* Cards - Enhanced hover */
         .card-hover {
             transition: all 0.3s ease;
         }
         .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        /* Pulse glow effect */
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(34, 211, 238, 0.6); }
         }
         /* Slide in animation */
         @keyframes slideIn {
@@ -105,9 +113,9 @@
     
     <!-- Background decorations -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div class="floating-shape w-[500px] h-[500px] bg-cyan-300" style="top: -15%; left: -10%;"></div>
-        <div class="floating-shape w-[400px] h-[400px] bg-sky-400" style="top: 40%; right: -15%; animation-delay: -7s;"></div>
-        <div class="floating-shape w-[350px] h-[350px] bg-teal-300" style="bottom: -10%; left: 20%; animation-delay: -14s;"></div>
+        <div class="floating-shape w-[500px] h-[500px] bg-cyan-400" style="top: -15%; left: -10%;"></div>
+        <div class="floating-shape w-[400px] h-[400px] bg-blue-500" style="top: 40%; right: -15%; animation-delay: -7s;"></div>
+        <div class="floating-shape w-[350px] h-[350px] bg-teal-400" style="bottom: -10%; left: 20%; animation-delay: -14s;"></div>
         
         <!-- Floating paws -->
         <div class="absolute text-white/20 text-6xl" style="top: 12%; left: 8%; animation: floatPaw 6s ease-in-out infinite;">🐾</div>

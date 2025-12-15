@@ -31,7 +31,7 @@
             <div>
                 <label class="block text-slate-700 font-semibold mb-3">🐾 Tipo de Animal</label>
                 <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                    {% for cat, emoji in [('perro', '🐕'), ('gato', '🐈'), ('ave', '🐦'), ('conejo', '🐰'), ('hamster', '🐹'), ('otro', '🐾')] %}
+                    {% for cat, emoji in [('perro', '🐕'), ('gato', '🐈'), ('ave', '🐦'), ('otro', '🐾')] %}
                     <label class="cursor-pointer">
                         <input type="radio" name="categoria" value="{{ cat }}" {% if cat == 'perro' %}checked{% endif %} class="hidden peer">
                         <div class="peer-checked:border-cyan-500 peer-checked:bg-cyan-50 peer-checked:shadow-lg border-2 border-slate-200 rounded-xl p-3 text-center transition-all duration-200 hover:border-cyan-300 hover:shadow-md bg-white/50">

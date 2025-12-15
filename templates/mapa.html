@@ -57,7 +57,7 @@
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 bg-gradient-to-br from-cyan-400 to-sky-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
                         <span class="text-xl">
-                            {% if r.categoria == 'perro' %}🐕{% elif r.categoria == 'gato' %}🐈{% elif r.categoria == 'ave' %}🐦{% elif r.categoria == 'conejo' %}🐰{% elif r.categoria == 'hamster' %}🐹{% else %}🐾{% endif %}
+                            {% if r.categoria == 'perro' %}🐕{% elif r.categoria == 'gato' %}🐈{% elif r.categoria == 'ave' %}🐦{% else %}🐾{% endif %}
                         </span>
                     </div>
                     <div class="flex-1 min-w-0">
@@ -110,7 +110,7 @@
     }
     
     function getEmoji(categoria) {
-        const emojis = { perro: '🐕', gato: '🐈', ave: '🐦', conejo: '🐰', hamster: '🐹' };
+        const emojis = { perro: '🐕', gato: '🐈', ave: '🐦' };
         return emojis[categoria] || '🐾';
     }
     
