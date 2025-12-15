@@ -24,5 +24,18 @@
     "foto": null,
     "fecha_reporte": "2025-12-14 23:59",
     "comentario_estado": null
+  },
+  {
+    "id": 7,
+    "nombre": "luna",
+    "descripcion": "color negro, raza pequena, en la punta du cola es cafe",
+    "categoria": "perro",
+    "fecha_perdido": "2025-12-03",
+    "ubicacion": "calle 5, plan 220 ciudad satelite",
+    "contacto": "73017345",
+    "estado": "Perdido",
+    "foto": null,
+    "fecha_reporte": "2025-12-15 02:36",
+    "comentario_estado": null
   }
 ]
